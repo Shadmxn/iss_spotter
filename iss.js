@@ -18,4 +18,24 @@ const fetchMyIP = function(callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip, callback) {
+  const url = `http://ipwhois.app/json/${ip}`;
+
+  needle.get(url, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching coordinates for IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+    const { latitude, longitude } = body;
+    callback(null, { latitude, longitude });
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
